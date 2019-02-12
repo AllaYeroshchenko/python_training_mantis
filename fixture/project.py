@@ -38,3 +38,10 @@ class ProjectHelper:
             list.append(Project(id=id, name=name, description=description))
         return list
 
+    def delete_by_id(self, id):
+        wd = self.app.wd
+        self.go_to_project_page()
+        wd.find_element_by_xpath(
+            "//table[@class='width100']//tr[@class='row-category']/following-sibling::tr/td[1]/a[contains(@href, '_id=%s')]" % id).click()
+        wd.find_element_by_xpath("//input[@value='Delete Project']").click()
+        wd.find_element_by_xpath("//input[@value='Delete Project']").click()
