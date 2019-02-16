@@ -10,13 +10,13 @@ def random_string(prefix, maxlen):
 testdata = [Project(random_string("name", 10), random_string("description", 15)) for i in range(1)]
 
 @pytest.mark.parametrize("project", testdata, ids=[repr(x) for x in testdata])
-def test_make_project(app, db, project):
+def test_make_project(app, project):
     old_projects = app.project.get_project_list()
-    old_projects_db=db.get_project_list()
-    assert sorted(old_projects, key=Project.id_or_max) == sorted(old_projects_db, key=Project.id_or_max)
+    old_projects_soap=app.soap.get_project_list(username=app.config["webadmin"]['username'], password=app.config["webadmin"]['password'])
+    assert sorted(old_projects, key=Project.id_or_max) == sorted(old_projects_soap, key=Project.id_or_max)
     app.project.make(project)
     old_projects.append(project)
-    new_projects_db=db.get_project_list()
-    assert sorted(old_projects, key=Project.id_or_max) == sorted(new_projects_db, key=Project.id_or_max)
+    new_projects_soap=app.soap.get_project_list(username=app.config["webadmin"]['username'], password=app.config["webadmin"]['password'])
+    assert sorted(old_projects, key=Project.id_or_max) == sorted(new_projects_soap, key=Project.id_or_max)
 
 
