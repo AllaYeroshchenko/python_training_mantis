@@ -4,6 +4,7 @@ import json
 import os.path
 import ftputil
 from fixture.db import DbFixture
+from fixture.soap import SoapFixture
 
 fixture = None
 target = None
@@ -64,7 +65,14 @@ def db(request, config):
     request.addfinalizer(fin)
     return dbfixture
 
-
+@pytest.fixture(scope="session")
+def soap(request, config):
+    soap_config = config["soap"]
+    soapfixture = SoapFixture(client = soap_config["client"], username=soap_config["username"], password=soap_config["password"])
+    def fin():
+        soapfixture.destroy()
+    request.addfinalizer(fin)
+    return soapfixture
 
 @pytest.fixture(scope="session", autouse=True)
 def stop(request):
